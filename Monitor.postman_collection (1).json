@@ -1,0 +1,74 @@
+{
+  "info": {
+    "_postman_id": "c7a1e2f4-9b3d-4d52-8e6a-1f0b5c9d7e21",
+    "name": "GoRest_Monitor",
+    "description": "Shift-Right: giám sát GET /users, thời gian phản hồi phải dưới 800ms.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://gorest.co.in/public/v2"
+    }
+  ],
+  "item": [
+    {
+      "name": "Warm-up - GET /users (không kiểm tra thời gian)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Warm-up: status 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Monitor - GET /users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code là 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Response time dưới 800ms', () => {",
+              "  pm.expect(pm.response.responseTime).to.be.below(800);",
+              "});",
+              "pm.test('Trả về mảng users', () => pm.expect(pm.response.json()).to.be.an('array'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      }
+    }
+  ]
+}
